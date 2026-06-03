@@ -1,5 +1,6 @@
-import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import ErrorSummary from '../components/ErrorSummary';
 
 // Q3 — review-epc. Confirms the Energy Performance Certificate found for the
 // address the user chose on the Address page. The address and EPC details are
@@ -9,26 +10,20 @@ function EpcPage({ formData, updateField }) {
   const navigate = useNavigate();
   const { address, epcRating, epcValidUntil } = formData;
   const [error, setError] = useState('');
-  const errorSummaryRef = useRef(null);
-
-  // GOV.UK error pattern: the error summary takes focus when it appears.
-  useEffect(() => {
-    if (error) errorSummaryRef.current?.focus();
-  }, [error]);
 
   // No address means the user has not completed the Address page yet. Send
   // them back rather than showing an empty certificate.
   if (!address) {
     return (
       <>
-        <a href="/address" className="govuk-back-link">Back</a>
+        <Link to="/address" className="govuk-back-link">Back</Link>
         <h1 className="govuk-heading-l">We could not find your property</h1>
         <p className="govuk-body">
           You need to enter your address before we can check its energy rating.
         </p>
-        <a href="/address" className="govuk-button" role="button" data-module="govuk-button">
+        <Link to="/address" className="govuk-button" role="button" data-module="govuk-button">
           Enter your address
-        </a>
+        </Link>
       </>
     );
   }
@@ -50,25 +45,10 @@ function EpcPage({ formData, updateField }) {
 
   return (
     <>
-      <a href="/address" className="govuk-back-link">Back</a>
+      <Link to="/address" className="govuk-back-link">Back</Link>
 
       {error && (
-        <div
-          className="govuk-error-summary"
-          aria-labelledby="error-summary-title"
-          role="alert"
-          tabIndex={-1}
-          ref={errorSummaryRef}
-        >
-          <h2 className="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-          </h2>
-          <div className="govuk-error-summary__body">
-            <ul className="govuk-list govuk-error-summary__list">
-              <li><a href="#epc-confirmed">{error}</a></li>
-            </ul>
-          </div>
-        </div>
+        <ErrorSummary errors={[{ message: error, href: '#epc-confirmed' }]} />
       )}
 
       <h1 className="govuk-heading-l">Check your property&rsquo;s energy rating</h1>
@@ -87,9 +67,9 @@ function EpcPage({ formData, updateField }) {
             ))}
           </dd>
           <dd className="govuk-summary-list__actions">
-            <a href="/address">
+            <Link to="/address">
               Change<span className="govuk-visually-hidden"> address</span>
-            </a>
+            </Link>
           </dd>
         </div>
         <div className="govuk-summary-list__row">
