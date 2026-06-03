@@ -1,3 +1,4 @@
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -33,8 +34,7 @@ describe('IncomePage', () => {
     expect(screen.getByLabelText('£25,000 to £49,999')).toBeInTheDocument();
     expect(screen.getByLabelText('£50,000 to £74,999')).toBeInTheDocument();
     expect(screen.getByLabelText('£75,000 or more')).toBeInTheDocument();
-    expect(screen.getByLabelText('Prefer not to say')).toBeInTheDocument();
-    expect(screen.getAllByRole('radio')).toHaveLength(5);
+    expect(screen.getAllByRole('radio')).toHaveLength(4);
   });
 
   it('shows the error summary and inline error when submitting with no selection', async () => {

@@ -7,7 +7,6 @@ const OPTIONS = [
   { value: '25000-49999', label: '£25,000 to £49,999' },
   { value: '50000-74999', label: '£50,000 to £74,999' },
   { value: '75000-plus', label: '£75,000 or more' },
-  { value: 'prefer-not-to-say', label: 'Prefer not to say' },
 ];
 
 const ERROR_MESSAGE = 'Select your total household income';
