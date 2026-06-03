@@ -2,9 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
 
-const EMPTY_ADDRESS = { line1: '', line2: '', town: '', county: '', postcode: '' };
-
-function AddressPage({ address = EMPTY_ADDRESS, setAddress = () => {}, onContinue }) {
+function AddressPage({ address, setAddress, onContinue }) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const errorSummaryRef = useRef(null);
@@ -28,11 +26,7 @@ function AddressPage({ address = EMPTY_ADDRESS, setAddress = () => {}, onContinu
     }
 
     setErrors({});
-    if (onContinue) {
-      onContinue(address);
-    } else {
-      navigate('/epc');
-    }
+    onContinue(address);
   };
 
   const hasErrors = Object.keys(errors).length > 0;
@@ -136,21 +130,6 @@ function AddressPage({ address = EMPTY_ADDRESS, setAddress = () => {}, onContinu
             value={address.town || ''}
             onChange={updateField('town')}
             aria-describedby={errors.town ? 'town-error' : undefined}
-          />
-        </div>
-
-        <div className="govuk-form-group">
-          <label className="govuk-label" htmlFor="county">
-            County (optional)
-          </label>
-          <input
-            className="govuk-input govuk-input--width-20"
-            id="county"
-            name="county"
-            type="text"
-            autoComplete="address-level1"
-            value={address.county || ''}
-            onChange={updateField('county')}
           />
         </div>
 
