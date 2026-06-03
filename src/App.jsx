@@ -20,6 +20,7 @@ function App() {
   // passed to pages as props so nothing is lost between routes.
   // address + epcRating are populated by the Address page (Q2); the EpcPage
   // (Q3, /review-epc) reads them to show the certificate found for that address.
+  // incomeBand is populated by the Income page.
   const [formData, setFormData] = useState({
     address: {
       line1: '10 Downing Street',
@@ -61,7 +62,10 @@ function App() {
                 />
               }
             />
-            <Route path="/income" element={<IncomePage />} />
+            <Route
+              path="/income"
+              element={<IncomePage formData={formData} updateField={updateField} />}
+            />
             <Route path="/insulation" element={<InsulationPage />} />
             <Route path="/heating" element={<HeatingPage />} />
             <Route path="/check-answers" element={<CheckAnswersPage />} />

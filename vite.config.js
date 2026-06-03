@@ -10,6 +10,11 @@ const HOSTNAME = process.env.VITE_PUBLIC_HOSTNAME || os.hostname();
  
 export default defineConfig({
   plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+  },
   server: {
     host: '0.0.0.0',
     port: PORT,
