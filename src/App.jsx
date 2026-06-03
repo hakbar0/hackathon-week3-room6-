@@ -6,6 +6,7 @@ import GovukHeader from './components/GovukHeader';
 import StartPage from './pages/StartPage';
 import PropertyTypePage from './pages/PropertyTypePage';
 import OwnershipPage from './pages/OwnershipPage';
+import AddressPage from './pages/AddressPage';
 import IncomePage from './pages/IncomePage';
 import InsulationPage from './pages/InsulationPage';
 import HeatingPage from './pages/HeatingPage';
@@ -48,6 +49,7 @@ function App() {
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}
             />
+            <Route path="/address" element={<AddressPage />} />
             <Route path="/income" element={<IncomePage />} />
             <Route path="/insulation" element={<InsulationPage />} />
             <Route path="/heating" element={<HeatingPage />} />
