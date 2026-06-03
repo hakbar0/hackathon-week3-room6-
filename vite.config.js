@@ -53,7 +53,13 @@ export default defineConfig({
     setupFiles: './src/test/setup.js',
   },
   server: {
-    host: '0.0.0.0',
+    host: HOSTNAME,
+    port: PORT,
+    strictPort: true,
+    allowedHosts: ['.labs.decoded.com', 'localhost'],
+  },
+  preview: {
+    host: HOSTNAME,
     port: PORT,
     strictPort: true,
     // Trust the lab reverse-proxy hostnames (e.g. code-lab13110.labs.decoded.com).

@@ -8,7 +8,6 @@ import StartPage from './pages/StartPage';
 import CountryPage from './pages/CountryPage';
 import PropertyTypePage from './pages/PropertyTypePage';
 import OwnershipPage from './pages/OwnershipPage';
-import AddressPage from './pages/AddressPage';
 import IncomePage from './pages/IncomePage';
 import InsulationPage from './pages/InsulationPage';
 import HeatingPage from './pages/HeatingPage';
@@ -66,7 +65,6 @@ function App() {
             />
             <Route path="/property-type" element={<PropertyTypePage />} />
             <Route path="/ownership" element={<OwnershipPage />} />
-            <Route path="/address" element={<AddressPage />} />
             <Route
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}

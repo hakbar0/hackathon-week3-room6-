@@ -40,7 +40,7 @@ function StartPage() {
 
       <h2 className="govuk-heading-m">Check your eligibility</h2>
       <p className="govuk-body">It takes around 5 minutes.</p>
-      <GovukButton variant="start" onClick={() => navigate('/address')}>
+      <GovukButton variant="start" onClick={() => navigate('/ownership')}>
         Start now
       </GovukButton>
 
