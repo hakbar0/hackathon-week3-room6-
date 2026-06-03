@@ -48,7 +48,8 @@ green-home-grant/
     └── pages/
         ├── StartPage.jsx       Service intro + start button
         ├── CountryPage.jsx     Q1
-        ├── OwnershipPage.jsx   Q2
+        ├── OwnershipPage.jsx   
+        |-- AddressPage.jsx
         ├── EpcPage.jsx         Q3
         ├── IncomePage.jsx      Q4
         ├── BenefitsPage.jsx    Q5 (income override)
