@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import GovukHeader from './components/GovukHeader';
 // TODO: Mount PhaseBanner below GovukHeader — import PhaseBanner from './components/PhaseBanner';
@@ -11,10 +12,27 @@ import HeatingPage from './pages/HeatingPage';
 import CheckAnswersPage from './pages/CheckAnswersPage';
 import ResultPage from './pages/ResultPage';
 import AccessibilityStatementPage from './pages/AccessibilityStatementPage';
+import EpcPage from './pages/EpcPage';
 
 function App() {
-  // TODO: Add form state here (useState) to hold all question answers
-  // TODO: Pass state and setter to each page component via props
+  // Central answer store (CLAUDE.md §2): all form state lives here and is
+  // passed to pages as props so nothing is lost between routes.
+  // address + epcRating are populated by the Address page (Q2); the EpcPage
+  // (Q3, /review-epc) reads them to show the certificate found for that address.
+  const [formData, setFormData] = useState({
+    address: {
+      line1: '10 Downing Street',
+      line2: '',
+      town: 'London',
+      postcode: 'SW1A 2AA',
+    },
+    epcRating: 'D',
+    epcValidUntil: '6 March 2032',
+    epcConfirmed: '',
+  });
+
+  const updateField = (field, value) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   return (
     <>
@@ -26,6 +44,10 @@ function App() {
             <Route path="/" element={<StartPage />} />
             <Route path="/property-type" element={<PropertyTypePage />} />
             <Route path="/ownership" element={<OwnershipPage />} />
+            <Route
+              path="/review-epc"
+              element={<EpcPage formData={formData} updateField={updateField} />}
+            />
             <Route path="/income" element={<IncomePage />} />
             <Route path="/insulation" element={<InsulationPage />} />
             <Route path="/heating" element={<HeatingPage />} />
