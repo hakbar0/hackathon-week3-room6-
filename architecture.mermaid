@@ -1,0 +1,32 @@
+flowchart TD
+    Start(["/  StartPage<br/>start-now button"])
+
+    subgraph QP["QuestionPage - ONE component - route /question/:step"]
+        direction LR
+        S1["property"] --> S2["ownership"] --> S3["income"] --> S4["insulation"] --> S5["heating"]
+    end
+
+    subgraph App["App.jsx - owns routes + state"]
+        State[("formData - single useState - source of truth<br/>propertyType, ownership, incomeBand, insulation, heating")]
+    end
+
+    Start -->|"Start now"| S1
+    S5 -->|"Continue"| CYA(["/check-answers  CheckAnswersPage<br/>summary list built from config + formData"])
+    CYA -->|"Change"| Ret["/question/:step?return=check<br/>same component, return mode"]
+    Ret -.->|"save, return to summary"| CYA
+    CYA -->|"Accept and continue"| Result(["/result  ResultPage"])
+    Result --> Elig["checkEligibility(formData)<br/>src/utils/eligibility.js - PURE<br/>returns outcome + reasons + nextSteps"]
+    Elig --> O{"outcome?"}
+    O -->|"eligible"| R1["Eligible<br/>what you qualify for + next steps"]
+    O -->|"partial"| R2["Partial eligibility<br/>+ next steps"]
+    O -->|"not eligible"| R3["Not eligible<br/>+ reasons"]
+
+    State -.->|"read / write current field"| QP
+    State -.->|"read all answers"| CYA
+    State -.->|"read all answers"| Elig
+
+    classDef pure fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20;
+    classDef store fill:#fff3e0,stroke:#ef6c00,color:#e65100;
+    class Elig pure;
+    class State store;
+
