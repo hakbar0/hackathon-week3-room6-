@@ -17,16 +17,16 @@ reviewing its own output critically **before** and **after** writing any code.
   message to the user. A task is not complete until all items pass.
 ## 1. Project Overview
 - **App:** Green Home Grant Eligibility Service.
-- **Framework:** React + TypeScript.
+- **Framework:** React + JavaScript (JSX).
 - **Tooling:** Vite, React Router v6.
 - **Patterns:** One-thing-per-page, GOV.UK Design System.
 - **Tests:** None. Quality is enforced by the senior review pass (Section 0), not by
   an automated test suite. Logic is still written pure so it stays verifiable by hand.
 ## 2. Technical Conventions
-- **Language:** TypeScript (strict mode, no `any`).
-- **State Management:** Lift all form state to `App.tsx` and pass down as props.
+- **Language:** JavaScript (ES modules, JSX). No TypeScript.
+- **State Management:** Lift all form state to `App.jsx` and pass down as props.
   No local `useState` for answers inside page components. No state loss between pages.
-- **Eligibility Logic:** Extracted to pure functions in `src/utils/eligibility.ts`.
+- **Eligibility Logic:** Extracted to pure functions in `src/utils/eligibility.js`.
   Pages never branch on eligibility inline; they call `onContinue(answer)`.
 - **Styling:** GOV.UK CSS classes only (e.g. `govuk-heading-xl`, `govuk-button`,
   `govuk-radios`). No custom CSS.
@@ -39,24 +39,22 @@ green-home-grant/
 ├── AI_LOG.md                  AI interaction log (Section 5 format)
 ├── index.html
 ├── package.json
-├── vite.config.ts
-├── tsconfig.json
+├── vite.config.js
 └── src/
-    ├── main.tsx
-    ├── App.tsx                Router + central answers state (state lives here)
-    ├── types.ts               Answers, Country, Ownership, Epc, FailureReason
+    ├── main.jsx
+    ├── App.jsx                Router + central answers state (state lives here)
     ├── utils/
-    │   └── eligibility.ts      Pure logic: nextStep(), getFailureContent()
+    │   └── eligibility.js      Pure logic: nextStep(), getFailureContent()
     └── pages/
-        ├── StartPage.tsx       Service intro + start button
-        ├── CountryPage.tsx     Q1
-        ├── OwnershipPage.tsx   Q2
-        ├── EpcPage.tsx         Q3
-        ├── IncomePage.tsx      Q4
-        ├── BenefitsPage.tsx    Q5 (income override)
-        ├── CheckAnswersPage.tsx GDS check-answers before result
-        ├── EligiblePage.tsx    Success result
-        └── FailurePage.tsx     Shared, reason-driven exit page
+        ├── StartPage.jsx       Service intro + start button
+        ├── CountryPage.jsx     Q1
+        ├── OwnershipPage.jsx   Q2
+        ├── EpcPage.jsx         Q3
+        ├── IncomePage.jsx      Q4
+        ├── BenefitsPage.jsx    Q5 (income override)
+        ├── CheckAnswersPage.jsx GDS check-answers before result
+        ├── EligiblePage.jsx    Success result
+        └── FailurePage.jsx     Shared, reason-driven exit page
 ```
  
 ## 4. Accessibility (WCAG 2.2 AA)
@@ -87,7 +85,7 @@ Worked example (the first entry):
 - [ ] Matches request?
 - [ ] GOV.UK styling applied (no custom CSS)?
 - [ ] WCAG 2.2 AA verified (labels, contrast, focus, 320px)?
-- [ ] State lifted to `App.tsx` (no loss between pages)?
+- [ ] State lifted to `App.jsx` (no loss between pages)?
 - [ ] Eligibility logic pure and isolated in `utils`?
 - [ ] AI_LOG.md updated?
 - [ ] Code is readable and concise?
