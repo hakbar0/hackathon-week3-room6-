@@ -207,30 +207,143 @@ a:focus {
   border-color: var(--govuk-error-colour);
 }
 
-/* Radios */
+/* Radios — GOV.UK custom radios. The native input is hidden but kept
+   clickable/focusable over the control area; the circle is drawn with CSS so
+   it renders crisply and consistently across browsers. */
 .govuk-radios {
   margin-bottom: var(--govuk-spacing-6);
 }
 
 .govuk-radios__item {
-  display: flex;
-  align-items: flex-start;
+  display: block;
+  position: relative;
+  min-height: 40px;
   margin-bottom: var(--govuk-spacing-2);
+  padding-left: 40px;
 }
 
+/* Native input sits over the control area, invisible but clickable */
 .govuk-radios__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
   width: 40px;
   height: 40px;
   margin: 0;
-  margin-right: var(--govuk-spacing-2);
+  opacity: 0;
   cursor: pointer;
-  flex-shrink: 0;
 }
 
 .govuk-radios__label {
+  display: inline-block;
+  padding: 7px var(--govuk-spacing-3) 0 0;
   font-size: 19px;
-  padding-top: 8px;
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* The outer circle */
+.govuk-radios__label::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* The inner dot (hidden until checked) */
+.govuk-radios__label::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 0;
+  height: 0;
+  border: 10px solid currentColor;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.govuk-radios__input:checked + .govuk-radios__label::after {
+  opacity: 1;
+}
+
+.govuk-radios__input:focus + .govuk-radios__label::before {
+  border-width: 4px;
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 4px var(--govuk-focus-colour);
+}
+
+/* Notification banner — used to surface important guidance in response to an action */
+.govuk-notification-banner {
+  margin-bottom: var(--govuk-spacing-8);
+  border: 5px solid var(--govuk-blue);
+  background-color: var(--govuk-blue);
+}
+
+.govuk-notification-banner:focus {
+  outline: 3px solid var(--govuk-focus-colour);
+}
+
+.govuk-notification-banner__header {
+  padding: 2px var(--govuk-spacing-3) var(--govuk-spacing-1);
+}
+
+.govuk-notification-banner__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--govuk-white);
+}
+
+.govuk-notification-banner__content {
+  padding: var(--govuk-spacing-3);
+  background-color: var(--govuk-white);
+  color: var(--govuk-black);
+}
+
+.govuk-notification-banner__content > * {
+  margin-bottom: var(--govuk-spacing-3);
+  max-width: 605px;
+}
+
+.govuk-notification-banner__content > *:last-child {
+  margin-bottom: 0;
+}
+
+.govuk-notification-banner__heading {
+  margin: 0 0 var(--govuk-spacing-3);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* Small heading */
+.govuk-heading-s {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: var(--govuk-spacing-3);
+}
+
+/* Links */
+.govuk-link {
+  color: var(--govuk-link-colour);
+}
+
+.govuk-link:focus {
+  outline: 3px solid transparent;
+  background-color: var(--govuk-focus-colour);
+  box-shadow: 0 -2px var(--govuk-focus-colour), 0 4px var(--govuk-black);
+  text-decoration: none;
+  color: var(--govuk-black);
 }
 
 /* Error messages */
@@ -359,11 +472,73 @@ a:focus {
   min-width: 0;
 }
 
+.govuk-fieldset__legend {
+  margin-bottom: var(--govuk-spacing-3);
+  padding: 0;
+}
+
+/* Large legend used when the question is the page heading */
+.govuk-fieldset__legend--l {
+  font-weight: 700;
+}
+
+/* Reset the heading's own margins when it sits inside a legend */
+.govuk-fieldset__heading {
+  font-size: 36px;
+  line-height: 1.1111111111;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Section caption shown above a question heading, e.g. "About your property" */
+.govuk-caption-l {
+  display: block;
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--govuk-dark-grey);
+  margin-bottom: var(--govuk-spacing-1);
+}
+
+/* Hint text under a label or legend */
+.govuk-hint {
+  font-size: 19px;
+  line-height: 1.3157894737;
+  color: var(--govuk-dark-grey);
+  margin-bottom: var(--govuk-spacing-4);
+}
+
+/* Layout grid */
+.govuk-grid-row {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.govuk-grid-row::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.govuk-grid-column-two-thirds {
+  box-sizing: border-box;
+  padding: 0 15px;
+  width: 100%;
+}
+
+@media (min-width: 641px) {
+  .govuk-grid-column-two-thirds {
+    width: 66.6666%;
+    float: left;
+  }
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .govuk-heading-xl { font-size: 32px; }
   .govuk-heading-l { font-size: 24px; }
   .govuk-heading-m { font-size: 19px; }
+  .govuk-fieldset__heading { font-size: 24px; }
+  .govuk-caption-l { font-size: 19px; }
   .govuk-panel__title { font-size: 32px; }
   .govuk-panel__body { font-size: 24px; }
   .govuk-summary-list__row { flex-direction: column; }

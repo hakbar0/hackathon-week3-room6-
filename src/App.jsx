@@ -66,6 +66,7 @@ function App() {
             />
             <Route path="/property-type" element={<PropertyTypePage />} />
             <Route path="/ownership" element={<OwnershipPage />} />
+            <Route path="/address" element={<AddressPage />} />
             <Route
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}
