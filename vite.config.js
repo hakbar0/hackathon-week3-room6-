@@ -14,6 +14,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: PORT,
     strictPort: true,
+    allowedHosts: ['.labs.decoded.com', 'localhost'],
     hmr: {
       protocol: 'wss',
       host: HOSTNAME,

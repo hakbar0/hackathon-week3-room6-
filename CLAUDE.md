@@ -15,6 +15,29 @@ reviewing its own output critically **before** and **after** writing any code.
   - Confirm eligibility logic is pure and isolated in `src/utils/`.
 - **Requirement:** A "PASS/FAIL" summary must be included in the final handoff
   message to the user. A task is not complete until all items pass.
+
+### 0a. Source of truth for design decisions: GOV.UK Design System
+The **GOV.UK Design System** at https://design-system.service.gov.uk/ is the
+authoritative reference for every design choice in this project. Before adding
+or changing any component, page pattern, error message, button, form control,
+heading, link, or piece of microcopy, check the relevant section:
+- Components: https://design-system.service.gov.uk/components/
+- Patterns: https://design-system.service.gov.uk/patterns/
+- Styles (typography, spacing, colour, layout): https://design-system.service.gov.uk/styles/
+- Accessibility guidance: https://design-system.service.gov.uk/accessibility/
+
+Rules:
+- Do not invent components, patterns, or class names. If the Design System
+  documents it, follow it; if it does not, prefer the closest documented
+  pattern over a custom invention.
+- Class names must come from the `govuk-*` namespace (see Section 2 "Styling").
+- Page patterns (start pages, question pages, check-answers, confirmation,
+  error summary, etc.) must follow the documented structure and microcopy.
+- If a documented pattern conflicts with these project rules, the Design
+  System wins on design and accessibility; this CLAUDE.md wins on project
+  architecture (state, routing, file layout, testing).
+- Cite the relevant Design System section in PR descriptions or AI_LOG
+  entries when a non-obvious pattern is applied.
 ## 1. Project Overview
 - **App:** Green Home Grant Eligibility Service.
 - **Framework:** React + JavaScript (JSX).
