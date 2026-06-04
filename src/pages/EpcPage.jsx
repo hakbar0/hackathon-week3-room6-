@@ -114,7 +114,7 @@ function EpcPage({ formData, updateField }) {
                   checked={formData.epcConfirmed === 'yes'}
                   onChange={() => updateField('epcConfirmed', 'yes')}
                 />
-                <label className="govuk-radios__label" htmlFor="epc-confirmed">
+                <label className="govuk-label govuk-radios__label" htmlFor="epc-confirmed">
                   Yes, this is my property
                 </label>
               </div>
@@ -128,7 +128,7 @@ function EpcPage({ formData, updateField }) {
                   checked={formData.epcConfirmed === 'no'}
                   onChange={() => updateField('epcConfirmed', 'no')}
                 />
-                <label className="govuk-radios__label" htmlFor="epc-confirmed-no">
+                <label className="govuk-label govuk-radios__label" htmlFor="epc-confirmed-no">
                   No, I need to change the address
                 </label>
               </div>
