@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
 import { FULL_FUNDING_INCOME_BANDS } from '../utils/eligibility';
 
@@ -50,22 +50,18 @@ function IncomePage({ formData, updateField }) {
     navigate(FULL_FUNDING_INCOME_BANDS.includes(selected) ? '/check-answers' : '/result');
   };
 
-  const handleBack = (event) => {
-    event.preventDefault();
-    // Keep the in-progress selection so it survives leaving the page.
-    if (selected) {
-      updateField('incomeBand', selected);
-    }
-    navigate('/review-epc');
+  // Keep the in-progress selection so it survives leaving the page via Back.
+  const commitSelection = () => {
+    if (selected) updateField('incomeBand', selected);
   };
 
   const describedBy = `income-hint${showError ? ' income-error' : ''}`;
 
   return (
     <>
-      <a href="/ownership" className="govuk-back-link" onClick={handleBack}>
+      <Link to="/review-epc" className="govuk-back-link" onClick={commitSelection}>
         Back
-      </a>
+      </Link>
 
       {showError && (
         <div

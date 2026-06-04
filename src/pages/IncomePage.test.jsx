@@ -8,6 +8,9 @@ import IncomePage from './IncomePage';
 const navigateMock = vi.fn();
 vi.mock('react-router-dom', () => ({
   useNavigate: () => navigateMock,
+  Link: ({ to, children, ...props }) => (
+    <a href={to} {...props}>{children}</a>
+  ),
 }));
 
 function renderPage(props = {}) {

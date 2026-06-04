@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import GovukHeader from './components/GovukHeader';
 import ServiceNavigation from './components/ServiceNavigation';
@@ -14,6 +14,21 @@ import ResultPage from './pages/ResultPage';
 import AccessibilityStatementPage from './pages/AccessibilityStatementPage';
 import EpcPage from './pages/EpcPage';
 import { ELIGIBLE_OWNERSHIP } from './utils/eligibility';
+
+// Per-route page titles (WCAG 2.4.2 Page Titled). Each route gets a unique,
+// descriptive title; the suffix matches the GOV.UK service name.
+const ROUTE_TITLES = {
+  '/': 'Check if you can get a Green Home Grant',
+  '/country': 'Which country is your property located in?',
+  '/ownership': 'Do you own your property?',
+  '/address': 'What is your address?',
+  '/review-epc': "Check your property's energy rating",
+  '/income': 'What is your total household income?',
+  '/check-answers': 'Check your answers',
+  '/result': 'Your eligibility result',
+  '/accessibility-statement': 'Accessibility statement',
+};
+const TITLE_SUFFIX = 'Check if you can get a Green Home Grant – GOV.UK';
 
 function App() {
   // Central answer store (CLAUDE.md §2): all form state lives here and is
@@ -44,6 +59,21 @@ function App() {
   const { pathname } = useLocation();
   const showServiceNav = pathname !== '/';
 
+  // On every client-side navigation: set the page title (2.4.2) and move focus
+  // to the new page's heading (2.4.3) so keyboard and screen-reader users are
+  // told they have moved and start reading from the top of the page.
+  const mainRef = useRef(null);
+  useEffect(() => {
+    const pageTitle = ROUTE_TITLES[pathname];
+    document.title = pageTitle ? `${pageTitle} – ${TITLE_SUFFIX}` : TITLE_SUFFIX;
+
+    const heading = mainRef.current?.querySelector('h1');
+    if (heading) {
+      heading.setAttribute('tabindex', '-1');
+      heading.focus();
+    }
+  }, [pathname]);
+
   return (
     <>
       {/* Skip link must be the first focusable element; initAll() (main.jsx)
@@ -55,7 +85,7 @@ function App() {
       {showServiceNav && <ServiceNavigation />}
       <div className="govuk-width-container">
         <PhaseBanner phase="Alpha" feedbackHref="#" />
-        <main className="govuk-main-wrapper" id="main-content" role="main">
+        <main className="govuk-main-wrapper" id="main-content" role="main" ref={mainRef}>
           <Routes>
             <Route path="/" element={<StartPage />} />
             <Route

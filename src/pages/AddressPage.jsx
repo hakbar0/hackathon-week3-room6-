@@ -1,9 +1,8 @@
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
 
 function AddressPage({ address, setAddress, onContinue }) {
-  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const errorSummaryRef = useRef(null);
 
@@ -35,16 +34,7 @@ function AddressPage({ address, setAddress, onContinue }) {
 
   return (
     <>
-      <a
-        href="#"
-        className="govuk-back-link"
-        onClick={(event) => {
-          event.preventDefault();
-          navigate(-1);
-        }}
-      >
-        Back
-      </a>
+      <Link to="/ownership" className="govuk-back-link">Back</Link>
 
       {hasErrors && (
         <div
