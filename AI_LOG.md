@@ -84,7 +84,16 @@ Document **3+ entries** in your AI_LOG covering **3-5 distinct patterns** from t
 | **What AI Generated** | New `src/components/ServiceNavigation.jsx` using the v6 service-name variant (`<section aria-label="Service information" class="govuk-service-navigation" data-module="govuk-service-navigation">` → own `govuk-width-container` → `govuk-service-navigation__service-name` linking the name to `/`). Wired into `App.jsx`: imported `useLocation`, derived `showServiceNav = pathname !== '/'`, and rendered `{showServiceNav && <ServiceNavigation />}` between `GovukHeader` and the `govuk-width-container` that holds the phase banner. |
 | **What You Changed + Why** | (1) Placed the component as a sibling *outside* the page `govuk-width-container` rather than inside it — the service-navigation component supplies its own width-container, so nesting it would double the gutters; this also puts it correctly above the phase banner. (2) Gated it on `pathname !== '/'` via `useLocation` rather than a prop threaded through every page — the start page follows the GOV.UK start-page pattern (no service nav), and route-based gating keeps the logic in one place and survives Back/Forward. (3) Used the service-name markup taken from the pinned package (`template-with-service-link.html`) and a plain `<a href="/">` to match the existing header logo link and canonical markup. (4) Verified with `vite build` (success). |
 
-## Instance 9: Ownership page (Q) with homeowner-only eligibility gate
+## Instance 9: Check-answers + result pages and pure eligibility logic
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-04 |
+| **Task** | Close the two Minimum Viable Submission pages that existed only as skeletons: the GOV.UK check-answers summary (item 2) and the eligibility confirmation/result page (item 3), plus the pure eligibility logic (CLAUDE.md §2) and unit tests (MVS item 9, ≥5). No pages removed — Country/Address/EPC kept as agreed. |
+| **What AI Generated** | `src/utils/eligibility.js` — a pure `checkEligibility(formData)` returning `{ outcome, reasons, measures }` with hard gates (England, owner-occupier, EPC band D–G, income < £36,000). `src/utils/eligibility.test.js` with vitest cases. `CheckAnswersPage.jsx` — a `govuk-summary-list` driven by a row config, value→label maps, a Change `<Link>` per row, and a submit to `/result`. `ResultPage.jsx` — reads `formData`, calls `checkEligibility`, renders the green `govuk-panel--confirmation` for eligible and a plain heading + reasons for not-eligible. Wired `formData` into the `/check-answers` and `/result` routes in `App.jsx`. |
+| **What You Changed + Why** | (1) Dropped a custom `govuk-panel--not-eligible` grey-panel class I first reached for — it isn't in `govuk-frontend` (the old `App.css` was removed) and GOV.UK does not panel negative outcomes anyway; a plain `govuk-heading-xl` needs no custom CSS and matches the real pattern. (2) Turned country / ownership / income into hard gates that route straight to `/result` and made income £36,000+ not-eligible (the brief's threshold), guarding each gate on a *truthy* answer so an unanswered question doesn't fail early. (3) Kept the eligibility decision entirely in `utils/` and out of the pages (CLAUDE.md §2): both pages only read state and render. (4) Used `<Link>` for Back and every Change action rather than `<a href>` so client-side navigation preserves the in-memory `formData`. |
+
+## Instance 10: Ownership page (Q) with homeowner-only eligibility gate
 
 | Field | Detail |
 |-------|--------|

@@ -51,6 +51,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
+    // Playwright owns the e2e/ specs; keep them out of the vitest unit run.
+    exclude: ['**/e2e/**', '**/node_modules/**', '**/dist/**'],
   },
   server: {
     host: '0.0.0.0',

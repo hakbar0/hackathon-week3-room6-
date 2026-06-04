@@ -1,57 +1,54 @@
-// Pure eligibility logic (CLAUDE.md §2). Pages never branch on eligibility
-// inline — they call onContinue(answer) and App routes using these helpers.
-// A failed check is NOT an error: it routes to the shared FailurePage with a
-// reason key, and getFailureContent(reason) supplies that page's content.
+// Pure eligibility logic for the Green Home Grant (CLAUDE.md §2 — no page
+// branches on eligibility inline; they call into this module). Given the
+// central formData, return a single outcome plus the reasons behind it.
+//
+// Rules (fictional scheme, per the project brief):
+//  - England only.
+//  - Owner-occupiers only (must own and live in the property).
+//  - Energy rating D–G qualifies; A–C is already efficient and does not.
+//  - Household income must be under £36,000; £36,000 a year or more does not
+//    qualify (the result page points to the postcode / benefits override).
 
-// The Green Home Grant is for owner-occupiers — people who own the home they
-// live in. Every other ownership answer cannot use this service.
-// NOTE: shared-ownership is treated as not eligible here; confirm against the
-// published Warm Homes: Local Grant rules before launch.
+export const ELIGIBLE_COUNTRY = 'england';
 export const ELIGIBLE_OWNERSHIP = 'owner-occupier';
+export const ELIGIBLE_EPC_BANDS = ['D', 'E', 'F', 'G'];
+// Bands at or below the £36,000 threshold (see IncomePage option values).
+export const FULL_FUNDING_INCOME_BANDS = ['under-25000', '25000-35999'];
 
-export function isOwnershipEligible(ownership) {
-  return ownership === ELIGIBLE_OWNERSHIP;
-}
+// Measures the grant can fund, shown on the eligible result.
+export const QUALIFYING_MEASURES = [
+  'Loft or wall insulation',
+  'An air source heat pump',
+];
 
-// Next route after the ownership question: the next question if eligible, or
-// the shared failure page (with a reason) if not.
-export function ownershipNextStep(ownership) {
-  return isOwnershipEligible(ownership)
-    ? '/income'
-    : '/not-eligible/not-homeowner';
-}
+// outcome: 'eligible' | 'not-eligible'
+export function checkEligibility(formData = {}) {
+  const { country, ownership, epcRating, incomeBand } = formData;
+  const band = (epcRating || '').toUpperCase();
 
-// Reason-driven content for the shared FailurePage. Keyed by the reason in the
-// route (/not-eligible/:reason). A link block renders as text + an anchor.
-const FAILURE_CONTENT = {
-  'not-homeowner': {
-    title: 'This service is currently for homeowners',
-    paragraphs: [
-      'However, privately rented homes can still be eligible for Green Home Grant funding.',
-      'Please contact your Local Authority directly if you are a tenant in a privately rented home and your landlord supports your application for the Green Home Grant.',
-      'Please also contact your Local Authority directly if you are a private landlord and support an application for the Green Home Grant for your rented property.',
-    ],
-    sections: [
-      {
-        heading: 'You might be able to get help from your energy supplier',
-        before: 'Check if you are eligible for the ',
-        link: {
-          text: 'Energy Company Obligation scheme',
-          href: 'https://www.gov.uk/energy-company-obligation',
-        },
-        after: '.',
-      },
-      {
-        heading: 'Contact your Local Authority',
-        before:
-          'Your local council might have additional grants or supports available. Contact them to find out more or ',
-        link: { text: 'visit their website', href: 'https://www.gov.uk/find-local-council' },
-        after: '.',
-      },
-    ],
-  },
-};
+  // Hard gates — any failure means not eligible. Guard on a truthy answer so an
+  // unanswered question doesn't fail the check before the user has reached it.
+  const reasons = [];
+  if (country && country !== ELIGIBLE_COUNTRY) {
+    reasons.push('The Green Home Grant is only available for properties in England.');
+  }
+  if (ownership && ownership !== ELIGIBLE_OWNERSHIP) {
+    reasons.push('The grant is for homeowners who own and live in the property.');
+  }
+  if (band && !ELIGIBLE_EPC_BANDS.includes(band)) {
+    reasons.push(
+      `Your property's energy rating (${band}) is already efficient (A to C), ` +
+        'so it does not qualify for funding.'
+    );
+  }
+  // Income of £36,000 or more is a hard gate — the applicant is not eligible.
+  if (incomeBand && !FULL_FUNDING_INCOME_BANDS.includes(incomeBand)) {
+    reasons.push('Your household income is £36,000 a year or more.');
+  }
 
-export function getFailureContent(reason) {
-  return FAILURE_CONTENT[reason] ?? null;
+  if (reasons.length > 0) {
+    return { outcome: 'not-eligible', reasons, measures: [] };
+  }
+
+  return { outcome: 'eligible', reasons: [], measures: QUALIFYING_MEASURES };
 }

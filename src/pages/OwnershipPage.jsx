@@ -5,8 +5,8 @@ import ErrorSummary from '../components/ErrorSummary';
 // Q — property ownership. Markup mirrors the Country and EPC pages: central
 // state held in App.jsx (passed via props), this page owns only transient
 // validation UI. The page never branches on eligibility itself (CLAUDE.md §2):
-// on a valid Continue it calls onContinue(answer); App routes via
-// src/utils/eligibility.js, sending ineligible answers to the FailurePage.
+// on a valid Continue it calls onContinue(answer); App routes owner-occupiers
+// onward and everyone else to the result page.
 const OPTIONS = [
   { value: 'owner-occupier', label: 'Yes, I own my property and live in it' },
   {
@@ -38,7 +38,7 @@ function OwnershipPage({ formData, updateField, onContinue }) {
 
   return (
     <>
-      <Link to="/property-type" className="govuk-back-link">Back</Link>
+      <Link to="/country" className="govuk-back-link">Back</Link>
 
       {error && (
         <ErrorSummary key={submitCount} errors={[{ message: error, href: '#ownership' }]} />
@@ -97,3 +97,5 @@ function OwnershipPage({ formData, updateField, onContinue }) {
 }
 
 export default OwnershipPage;
+
+ 

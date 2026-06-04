@@ -1,9 +1,8 @@
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
 
 function AddressPage({ address, setAddress, onContinue }) {
-  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const errorSummaryRef = useRef(null);
 
@@ -35,16 +34,7 @@ function AddressPage({ address, setAddress, onContinue }) {
 
   return (
     <>
-      <a
-        href="#"
-        className="govuk-back-link"
-        onClick={(event) => {
-          event.preventDefault();
-          navigate(-1);
-        }}
-      >
-        Back
-      </a>
+      <Link to="/ownership" className="govuk-back-link">Back</Link>
 
       {hasErrors && (
         <div
@@ -112,46 +102,54 @@ function AddressPage({ address, setAddress, onContinue }) {
           />
         </div>
 
-        <div className={`govuk-form-group ${errorClass('town')}`}>
-          <label className="govuk-label" htmlFor="town">
-            Town or city
-          </label>
-          {errors.town && (
-            <p id="town-error" className="govuk-error-message">
-              <span className="govuk-visually-hidden">Error:</span> {errors.town}
-            </p>
-          )}
-          <input
-            className={`govuk-input govuk-input--width-20 ${inputErrorClass('town')}`}
-            id="town"
-            name="town"
-            type="text"
-            autoComplete="address-level2"
-            value={address.town || ''}
-            onChange={updateField('town')}
-            aria-describedby={errors.town ? 'town-error' : undefined}
-          />
-        </div>
+        {/* Town and postcode share a row on tablet+; the grid columns stack to
+            full width below 641px, so there's no horizontal scroll at 320px. */}
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-one-half">
+            <div className={`govuk-form-group ${errorClass('town')}`}>
+              <label className="govuk-label" htmlFor="town">
+                Town or city
+              </label>
+              {errors.town && (
+                <p id="town-error" className="govuk-error-message">
+                  <span className="govuk-visually-hidden">Error:</span> {errors.town}
+                </p>
+              )}
+              <input
+                className={`govuk-input ${inputErrorClass('town')}`}
+                id="town"
+                name="town"
+                type="text"
+                autoComplete="address-level2"
+                value={address.town || ''}
+                onChange={updateField('town')}
+                aria-describedby={errors.town ? 'town-error' : undefined}
+              />
+            </div>
+          </div>
 
-        <div className={`govuk-form-group ${errorClass('postcode')}`}>
-          <label className="govuk-label" htmlFor="postcode">
-            Postcode
-          </label>
-          {errors.postcode && (
-            <p id="postcode-error" className="govuk-error-message">
-              <span className="govuk-visually-hidden">Error:</span> {errors.postcode}
-            </p>
-          )}
-          <input
-            className={`govuk-input govuk-input--width-10 ${inputErrorClass('postcode')}`}
-            id="postcode"
-            name="postcode"
-            type="text"
-            autoComplete="postal-code"
-            value={address.postcode || ''}
-            onChange={updateField('postcode')}
-            aria-describedby={errors.postcode ? 'postcode-error' : undefined}
-          />
+          <div className="govuk-grid-column-one-half">
+            <div className={`govuk-form-group ${errorClass('postcode')}`}>
+              <label className="govuk-label" htmlFor="postcode">
+                Postcode
+              </label>
+              {errors.postcode && (
+                <p id="postcode-error" className="govuk-error-message">
+                  <span className="govuk-visually-hidden">Error:</span> {errors.postcode}
+                </p>
+              )}
+              <input
+                className={`govuk-input ${inputErrorClass('postcode')}`}
+                id="postcode"
+                name="postcode"
+                type="text"
+                autoComplete="postal-code"
+                value={address.postcode || ''}
+                onChange={updateField('postcode')}
+                aria-describedby={errors.postcode ? 'postcode-error' : undefined}
+              />
+            </div>
+          </div>
         </div>
 
         <GovukButton type="submit">Continue</GovukButton>
