@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import IncomePage from './IncomePage';
 
@@ -31,10 +31,11 @@ describe('IncomePage', () => {
     ).toBeInTheDocument();
 
     expect(screen.getByLabelText('Less than £25,000')).toBeInTheDocument();
-    expect(screen.getByLabelText('£25,000 to £49,999')).toBeInTheDocument();
+    expect(screen.getByLabelText('£25,000 to £35,999')).toBeInTheDocument();
+    expect(screen.getByLabelText('£36,000 to £49,999')).toBeInTheDocument();
     expect(screen.getByLabelText('£50,000 to £74,999')).toBeInTheDocument();
     expect(screen.getByLabelText('£75,000 or more')).toBeInTheDocument();
-    expect(screen.getAllByRole('radio')).toHaveLength(4);
+    expect(screen.getAllByRole('radio')).toHaveLength(5);
   });
 
   it('shows the error summary and inline error when submitting with no selection', async () => {
@@ -89,5 +90,25 @@ describe('IncomePage', () => {
 
     expect(screen.getByLabelText('£75,000 or more')).toBeChecked();
     expect(screen.getByLabelText('Less than £25,000')).not.toBeChecked();
+  });
+
+  it('submits via a real form so Enter-to-submit and keyboard parity work', async () => {
+    const { updateField, container } = renderPage();
+
+    // The page is a <form> with a type="submit" Continue button, not a
+    // bare onClick button — this is what gives GDS question pages
+    // native form semantics (Enter submits from within the radio group).
+    const form = container.querySelector('form');
+    expect(form).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Continue' })).toHaveAttribute(
+      'type',
+      'submit'
+    );
+
+    // Submitting the form (as Enter / button activation does) runs validation.
+    await userEvent.setup().click(screen.getByLabelText('£25,000 to £35,999'));
+    fireEvent.submit(form);
+    expect(updateField).toHaveBeenCalledWith('incomeBand', '25000-35999');
+    expect(navigateMock).toHaveBeenCalledWith('/insulation');
   });
 });
