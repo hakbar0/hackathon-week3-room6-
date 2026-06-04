@@ -22,6 +22,10 @@ function IncomePage({ formData, updateField }) {
   // Initialised from shared state so the value is preserved on return visits.
   const [selected, setSelected] = useState(formData.incomeBand || '');
   const [showError, setShowError] = useState(false);
+  // Bumped on every failed submit so the focus effect re-runs even when
+  // showError is already true — a second consecutive Continue with no
+  // selection must move focus back to the error summary.
+  const [submitCount, setSubmitCount] = useState(0);
   const errorSummaryRef = useRef(null);
 
   // Move focus to the error summary when validation fails (GOV.UK pattern).
@@ -29,12 +33,13 @@ function IncomePage({ formData, updateField }) {
     if (showError && errorSummaryRef.current) {
       errorSummaryRef.current.focus();
     }
-  }, [showError]);
+  }, [showError, submitCount]);
 
   const handleContinue = (event) => {
     event.preventDefault();
     if (!selected) {
       setShowError(true);
+      setSubmitCount((count) => count + 1);
       return;
     }
     updateField('incomeBand', selected);

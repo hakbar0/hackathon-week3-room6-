@@ -1,4 +1,5 @@
-// TODO: Import useNavigate from react-router-dom
+import { Link } from 'react-router-dom';
+// TODO: Also import useNavigate for the Continue button
 
 function OwnershipPage() {
   // TODO: Read current value from form state
@@ -7,7 +8,7 @@ function OwnershipPage() {
 
   return (
     <>
-      <a href="/property-type" className="govuk-back-link">Back</a>
+      <Link to="/property-type" className="govuk-back-link">Back</Link>
       <h1 className="govuk-heading-l">Do you own or rent your property?</h1>
       {/* TODO: Add radio buttons for: Own (with or without mortgage), Rent from a private landlord, Rent from a housing association, Rent from the council */}
       {/* TODO: Add a Continue button */}

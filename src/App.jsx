@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import GovukHeader from './components/GovukHeader';
-// TODO: Mount PhaseBanner below GovukHeader — import PhaseBanner from './components/PhaseBanner';
-// TODO: Mount GovukFooter after the closing </main> — import GovukFooter from './components/GovukFooter';
+import ServiceNavigation from './components/ServiceNavigation';
+import PhaseBanner from './components/PhaseBanner';
+import GovukFooter from './components/GovukFooter';
 import StartPage from './pages/StartPage';
+import CountryPage from './pages/CountryPage';
 import PropertyTypePage from './pages/PropertyTypePage';
 import OwnershipPage from './pages/OwnershipPage';
 import AddressPage from './pages/AddressPage';
@@ -22,6 +24,7 @@ function App() {
   // (Q3, /review-epc) reads them to show the certificate found for that address.
   // incomeBand is populated by the Income page.
   const [formData, setFormData] = useState({
+    country: '',
     address: {
       line1: '10 Downing Street',
       line2: '',
@@ -37,15 +40,30 @@ function App() {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
   const navigate = useNavigate();
+  // Service navigation shows once the user has left the start page (CLAUDE.md
+  // §2 linear flow: Start -> questions -> result), matching GOV.UK start-page
+  // pattern where the start page itself carries no service navigation.
+  const { pathname } = useLocation();
+  const showServiceNav = pathname !== '/';
 
   return (
     <>
+      {/* Skip link must be the first focusable element; initAll() (main.jsx)
+          wires the govuk-skip-link JS to focus #main-content on activation. */}
+      <a href="#main-content" className="govuk-skip-link" data-module="govuk-skip-link">
+        Skip to main content
+      </a>
       <GovukHeader />
-      {/* TODO: Add <PhaseBanner phase="alpha" feedbackHref="#" /> here */}
+      {showServiceNav && <ServiceNavigation />}
       <div className="govuk-width-container">
-        <main className="govuk-main-wrapper" role="main">
+        <PhaseBanner phase="Alpha" feedbackHref="#" />
+        <main className="govuk-main-wrapper" id="main-content" role="main">
           <Routes>
             <Route path="/" element={<StartPage />} />
+            <Route
+              path="/country"
+              element={<CountryPage formData={formData} updateField={updateField} />}
+            />
             <Route path="/property-type" element={<PropertyTypePage />} />
             <Route path="/ownership" element={<OwnershipPage />} />
             <Route
@@ -74,7 +92,7 @@ function App() {
           </Routes>
         </main>
       </div>
-      {/* TODO: Add <GovukFooter /> here */}
+      <GovukFooter />
     </>
   );
 }
