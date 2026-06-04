@@ -1,32 +1,53 @@
 flowchart TD
     Start(["/  StartPage<br/>start-now button"])
 
-    subgraph QP["QuestionPage - ONE component - route /question/:step"]
-        direction LR
-        S1["property"] --> S2["ownership"] --> S3["income"] --> S4["insulation"] --> S5["heating"]
+    subgraph Flow["Question flow - one component per route - one thing per page"]
+        direction TB
+        Q1["/country  CountryPage<br/>England-only gate"]
+        Q2["/ownership  OwnershipPage<br/>owner-occupier gate"]
+        Q3["/address  AddressPage<br/>address entry"]
+        Q4["/review-epc  EpcPage<br/>confirm EPC band"]
+        Q5["/income  IncomePage<br/>income band gate"]
+        Q1 -->|"England"| Q2
+        Q2 -->|"owner-occupier"| Q3
+        Q3 -->|"Continue"| Q4
+        Q4 -->|"Yes"| Q5
     end
 
-    subgraph App["App.jsx - owns routes + state"]
-        State[("formData - single useState - source of truth<br/>propertyType, ownership, incomeBand, insulation, heating")]
+    subgraph App["App.jsx - owns routes + central state + a11y"]
+        State[("formData - single useState - source of truth<br/>country, ownership, address, epcRating,<br/>epcConfirmed, incomeBand")]
+        A11y["per-route document.title (2.4.2)<br/>focus to h1 on navigation (2.4.3)"]
     end
 
-    Start -->|"Start now"| S1
-    S5 -->|"Continue"| CYA(["/check-answers  CheckAnswersPage<br/>summary list built from config + formData"])
-    CYA -->|"Change"| Ret["/question/:step?return=check<br/>same component, return mode"]
-    Ret -.->|"save, return to summary"| CYA
-    CYA -->|"Accept and continue"| Result(["/result  ResultPage"])
-    Result --> Elig["checkEligibility(formData)<br/>src/utils/eligibility.js - PURE<br/>returns outcome + reasons + nextSteps"]
+    Start -->|"Start now"| Q1
+    Q5 -->|"income < £36k"| CYA(["/check-answers  CheckAnswersPage<br/>govuk-summary-list + Change link per answer"])
+    CYA -->|"Change"| Q1
+    CYA -->|"Accept and send"| Result(["/result  ResultPage"])
+
+    %% Gates route straight to the result on failure
+    Q1 -.->|"not England"| Result
+    Q2 -.->|"not owner-occupier"| Result
+    Q5 -.->|"income >= £36k"| Result
+
+    Result --> Elig["checkEligibility(formData)<br/>src/utils/eligibility.js - PURE<br/>gates: England, owner-occupier,<br/>EPC D-G, income < £36k"]
     Elig --> O{"outcome?"}
-    O -->|"eligible"| R1["Eligible<br/>what you qualify for + next steps"]
-    O -->|"partial"| R2["Partial eligibility<br/>+ next steps"]
-    O -->|"not eligible"| R3["Not eligible<br/>+ reasons"]
+    O -->|"eligible"| R1["Green confirmation panel<br/>measures + what happens next"]
+    O -->|"not-eligible"| R2["Plain heading + reasons<br/>+ per-gate guidance"]
 
-    State -.->|"read / write current field"| QP
+    Footer["/accessibility-statement<br/>(footer link)"]
+
+    State -.->|"read / write current field"| Flow
     State -.->|"read all answers"| CYA
     State -.->|"read all answers"| Elig
 
+    subgraph Shell["Layout shell - govuk-frontend 6"]
+        direction LR
+        SkipLink["skip link"] --> Header["GovukHeader"] --> SvcNav["ServiceNavigation<br/>(not on start page)"] --> Phase["PhaseBanner"] --> FooterC["GovukFooter"]
+    end
+
     classDef pure fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20;
     classDef store fill:#fff3e0,stroke:#ef6c00,color:#e65100;
+    classDef result fill:#e3f2fd,stroke:#1565c0,color:#0d47a1;
     class Elig pure;
     class State store;
-
+    class Result,R1,R2 result;
