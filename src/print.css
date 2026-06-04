@@ -1,0 +1,43 @@
+/* Print / Save-as-PDF styles. Strips the page chrome so only the result
+   content prints, and feeds the browser semantic HTML (headings, lists,
+   summary list) so its print engine emits a tagged, accessible PDF. */
+@media print {
+  /* Hide everything that isn't the eligibility result itself. */
+  .govuk-skip-link,
+  .govuk-header,
+  .govuk-service-navigation,
+  .govuk-phase-banner,
+  .govuk-footer,
+  .govuk-back-link,
+  .app-no-print {
+    display: none !important;
+  }
+
+  /* Remove the layout container's gutters/limits so the result uses the page. */
+  .govuk-width-container,
+  .govuk-main-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Force solid black text on white for legibility and contrast in print. */
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* GOV.UK panels invert colours on screen; keep them readable on paper. */
+  .govuk-panel {
+    border: 2px solid #000 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Show link targets so the printed PDF remains useful offline. */
+  .govuk-body a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 90%;
+    word-wrap: break-word;
+  }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import 'govuk-frontend/dist/govuk/govuk-frontend.min.css';
+import './print.css';
 import { initAll } from 'govuk-frontend';
 import App from './App';
 
