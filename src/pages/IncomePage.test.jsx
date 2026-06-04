@@ -75,14 +75,14 @@ describe('IncomePage', () => {
     expect(updateField).toHaveBeenCalledWith('incomeBand', '50000-74999');
   });
 
-  it('navigates to /insulation on a valid submit', async () => {
+  it('navigates to /check-answers on a valid submit', async () => {
     const user = userEvent.setup();
     renderPage();
 
     await user.click(screen.getByLabelText('Less than £25,000'));
     await user.click(screen.getByRole('button', { name: 'Continue' }));
 
-    expect(navigateMock).toHaveBeenCalledWith('/insulation');
+    expect(navigateMock).toHaveBeenCalledWith('/check-answers');
   });
 
   it('preselects the matching radio from existing formData.incomeBand', () => {
@@ -109,6 +109,6 @@ describe('IncomePage', () => {
     await userEvent.setup().click(screen.getByLabelText('£25,000 to £35,999'));
     fireEvent.submit(form);
     expect(updateField).toHaveBeenCalledWith('incomeBand', '25000-35999');
-    expect(navigateMock).toHaveBeenCalledWith('/insulation');
+    expect(navigateMock).toHaveBeenCalledWith('/check-answers');
   });
 });

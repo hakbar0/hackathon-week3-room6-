@@ -35,10 +35,15 @@ describe('checkEligibility', () => {
     expect(result.reasons[0]).toMatch(/B/);
   });
 
-  it('returns partial when core gates pass but income is above the threshold', () => {
+  it('is not eligible when income is £36,000 a year or more', () => {
+    const result = checkEligibility({ ...ELIGIBLE, incomeBand: '36000-49999' });
+    expect(result.outcome).toBe('not-eligible');
+    expect(result.reasons[0]).toMatch(/£36,000 a year or more/);
+  });
+
+  it('treats the £50,000–£74,999 band as not eligible too', () => {
     const result = checkEligibility({ ...ELIGIBLE, incomeBand: '50000-74999' });
-    expect(result.outcome).toBe('partial');
-    expect(result.measures.length).toBeGreaterThan(0);
+    expect(result.outcome).toBe('not-eligible');
   });
 
   it('collects every failing reason at once', () => {
@@ -49,7 +54,7 @@ describe('checkEligibility', () => {
       incomeBand: '75000-plus',
     });
     expect(result.outcome).toBe('not-eligible');
-    expect(result.reasons).toHaveLength(3);
+    expect(result.reasons).toHaveLength(4);
   });
 
   it('does not fail gates for questions that are still unanswered', () => {

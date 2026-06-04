@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
+import { FULL_FUNDING_INCOME_BANDS } from '../utils/eligibility';
 
 // Bands are split at the £36,000 Warm Homes eligibility threshold (see StartPage)
 // so each band maps unambiguously to eligible / not eligible — no band straddles
@@ -43,7 +44,10 @@ function IncomePage({ formData, updateField }) {
       return;
     }
     updateField('incomeBand', selected);
-    navigate('/insulation');
+    // Income at or below £36,000 continues the flow; £36,000 or more goes
+    // straight to the result, where checkEligibility() reports not eligible
+    // with the postcode / benefits override guidance.
+    navigate(FULL_FUNDING_INCOME_BANDS.includes(selected) ? '/check-answers' : '/result');
   };
 
   const handleBack = (event) => {
@@ -52,7 +56,7 @@ function IncomePage({ formData, updateField }) {
     if (selected) {
       updateField('incomeBand', selected);
     }
-    navigate('/ownership');
+    navigate('/review-epc');
   };
 
   const describedBy = `income-hint${showError ? ' income-error' : ''}`;
@@ -87,8 +91,8 @@ function IncomePage({ formData, updateField }) {
       <form onSubmit={handleContinue} noValidate>
         <div className={`govuk-form-group${showError ? ' govuk-form-group--error' : ''}`}>
           <fieldset className="govuk-fieldset" aria-describedby={describedBy}>
-            <legend className="govuk-fieldset__legend">
-              <h1 className="govuk-heading-l">What is your total household income?</h1>
+            <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 className="govuk-fieldset__heading">What is your total household income?</h1>
             </legend>
 
             <div id="income-hint" className="govuk-hint">
@@ -102,7 +106,7 @@ function IncomePage({ formData, updateField }) {
               </p>
             )}
 
-            <div className="govuk-radios">
+            <div className="govuk-radios" data-module="govuk-radios">
               {OPTIONS.map((option, index) => {
                 const id = index === 0 ? FIRST_OPTION_ID : `income-band-${index + 1}`;
                 return (
@@ -119,7 +123,7 @@ function IncomePage({ formData, updateField }) {
                         setShowError(false);
                       }}
                     />
-                    <label className="govuk-radios__label" htmlFor={id}>
+                    <label className="govuk-label govuk-radios__label" htmlFor={id}>
                       {option.label}
                     </label>
                   </div>

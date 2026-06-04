@@ -36,14 +36,6 @@ function labelFor(map, value) {
   return map[value] || value;
 }
 
-// Title-case a raw coded value (e.g. 'gas-boiler' -> 'Gas boiler') for the
-// skeleton question pages that don't yet store a coded vocabulary.
-function freeText(value) {
-  if (!value) return NOT_ANSWERED;
-  const spaced = value.replace(/-/g, ' ');
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
-}
-
 function formatAddress(address) {
   if (!address) return NOT_ANSWERED;
   const lines = [address.line1, address.line2, address.town, address.postcode].filter(Boolean);
@@ -62,11 +54,8 @@ function CheckAnswersPage({ formData = {} }) {
       value: labelFor(EPC_CONFIRMED_LABELS, formData.epcConfirmed),
       href: '/review-epc',
     },
-    { key: 'Property type', value: freeText(formData.propertyType), href: '/property-type' },
     { key: 'Ownership', value: labelFor(OWNERSHIP_LABELS, formData.ownership), href: '/ownership' },
     { key: 'Household income', value: labelFor(INCOME_LABELS, formData.incomeBand), href: '/income' },
-    { key: 'Insulation', value: freeText(formData.insulation), href: '/insulation' },
-    { key: 'Heating system', value: freeText(formData.heating), href: '/heating' },
   ];
 
   function handleSubmit(event) {
@@ -76,7 +65,7 @@ function CheckAnswersPage({ formData = {} }) {
 
   return (
     <>
-      <Link to="/heating" className="govuk-back-link">Back</Link>
+      <Link to="/income" className="govuk-back-link">Back</Link>
 
       <h1 className="govuk-heading-l">Check your answers before sending your application</h1>
 

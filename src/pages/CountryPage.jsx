@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ErrorSummary from '../components/ErrorSummary';
+import { ELIGIBLE_COUNTRY } from '../utils/eligibility';
 
 // Q1 — country. Markup mirrors the live Warm Homes: Local Grant
 // questionnaire/country page exactly (fieldset > legend--l > h1, hint, radios).
@@ -30,10 +31,10 @@ function CountryPage({ formData, updateField }) {
       return;
     }
     setError('');
-    // Linear flow (CLAUDE.md §2): continue to the next question. England-only
-    // eligibility gating belongs in src/utils/eligibility.js once that and the
-    // shared failure page exist — it is not branched on inline here.
-    navigate('/property-type');
+    // The grant is England-only: England continues through the question flow,
+    // every other country goes straight to the result, where the pure
+    // checkEligibility() reports not-eligible with devolved-nation guidance.
+    navigate(formData.country === ELIGIBLE_COUNTRY ? '/ownership' : '/result');
   }
 
   const describedBy = `country-hint${error ? ' country-error' : ''}`;

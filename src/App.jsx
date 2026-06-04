@@ -6,16 +6,14 @@ import PhaseBanner from './components/PhaseBanner';
 import GovukFooter from './components/GovukFooter';
 import StartPage from './pages/StartPage';
 import CountryPage from './pages/CountryPage';
-import PropertyTypePage from './pages/PropertyTypePage';
 import OwnershipPage from './pages/OwnershipPage';
 import AddressPage from './pages/AddressPage';
 import IncomePage from './pages/IncomePage';
-import InsulationPage from './pages/InsulationPage';
-import HeatingPage from './pages/HeatingPage';
 import CheckAnswersPage from './pages/CheckAnswersPage';
 import ResultPage from './pages/ResultPage';
 import AccessibilityStatementPage from './pages/AccessibilityStatementPage';
 import EpcPage from './pages/EpcPage';
+import { ELIGIBLE_OWNERSHIP } from './utils/eligibility';
 
 function App() {
   // Central answer store (CLAUDE.md §2): all form state lives here and is
@@ -64,8 +62,18 @@ function App() {
               path="/country"
               element={<CountryPage formData={formData} updateField={updateField} />}
             />
-            <Route path="/property-type" element={<PropertyTypePage />} />
-            <Route path="/ownership" element={<OwnershipPage />} />
+            <Route
+              path="/ownership"
+              element={
+                <OwnershipPage
+                  formData={formData}
+                  updateField={updateField}
+                  onContinue={(value) =>
+                    navigate(value === ELIGIBLE_OWNERSHIP ? '/address' : '/result')
+                  }
+                />
+              }
+            />
             <Route
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}
@@ -84,8 +92,6 @@ function App() {
               path="/income"
               element={<IncomePage formData={formData} updateField={updateField} />}
             />
-            <Route path="/insulation" element={<InsulationPage />} />
-            <Route path="/heating" element={<HeatingPage />} />
             <Route path="/check-answers" element={<CheckAnswersPage formData={formData} />} />
             <Route path="/result" element={<ResultPage formData={formData} />} />
             <Route path="/accessibility-statement" element={<AccessibilityStatementPage />} />

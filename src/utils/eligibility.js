@@ -6,8 +6,8 @@
 //  - England only.
 //  - Owner-occupiers only (must own and live in the property).
 //  - Energy rating D–G qualifies; A–C is already efficient and does not.
-//  - Household income at or below £36,000 qualifies for full funding; above
-//    that the applicant may still get partial funding.
+//  - Household income must be under £36,000; £36,000 a year or more does not
+//    qualify (the result page points to the postcode / benefits override).
 
 export const ELIGIBLE_COUNTRY = 'england';
 export const ELIGIBLE_OWNERSHIP = 'owner-occupier';
@@ -15,13 +15,13 @@ export const ELIGIBLE_EPC_BANDS = ['D', 'E', 'F', 'G'];
 // Bands at or below the £36,000 threshold (see IncomePage option values).
 export const FULL_FUNDING_INCOME_BANDS = ['under-25000', '25000-35999'];
 
-// Measures the grant can fund, shown on the eligible / partial result.
+// Measures the grant can fund, shown on the eligible result.
 export const QUALIFYING_MEASURES = [
   'Loft or wall insulation',
   'An air source heat pump',
 ];
 
-// outcome: 'eligible' | 'partial' | 'not-eligible'
+// outcome: 'eligible' | 'not-eligible'
 export function checkEligibility(formData = {}) {
   const { country, ownership, epcRating, incomeBand } = formData;
   const band = (epcRating || '').toUpperCase();
@@ -41,21 +41,13 @@ export function checkEligibility(formData = {}) {
         'so it does not qualify for funding.'
     );
   }
+  // Income of £36,000 or more is a hard gate — the applicant is not eligible.
+  if (incomeBand && !FULL_FUNDING_INCOME_BANDS.includes(incomeBand)) {
+    reasons.push('Your household income is £36,000 a year or more.');
+  }
 
   if (reasons.length > 0) {
     return { outcome: 'not-eligible', reasons, measures: [] };
-  }
-
-  // Soft factor — income above the threshold still allows partial funding.
-  if (incomeBand && !FULL_FUNDING_INCOME_BANDS.includes(incomeBand)) {
-    return {
-      outcome: 'partial',
-      reasons: [
-        'Your household income is above the £36,000 threshold for full funding, ' +
-          'but you may still qualify for partial funding towards some improvements.',
-      ],
-      measures: QUALIFYING_MEASURES,
-    };
   }
 
   return { outcome: 'eligible', reasons: [], measures: QUALIFYING_MEASURES };
