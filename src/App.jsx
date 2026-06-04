@@ -16,6 +16,8 @@ import CheckAnswersPage from './pages/CheckAnswersPage';
 import ResultPage from './pages/ResultPage';
 import AccessibilityStatementPage from './pages/AccessibilityStatementPage';
 import EpcPage from './pages/EpcPage';
+import FailurePage from './pages/FailurePage';
+import { ownershipNextStep } from './utils/eligibility';
 
 function App() {
   // Central answer store (CLAUDE.md §2): all form state lives here and is
@@ -68,7 +70,13 @@ function App() {
             <Route path="/property-type" element={<PropertyTypePage />} />
             <Route
               path="/ownership"
-              element={<OwnershipPage formData={formData} updateField={updateField} />}
+              element={
+                <OwnershipPage
+                  formData={formData}
+                  updateField={updateField}
+                  onContinue={(ownership) => navigate(ownershipNextStep(ownership))}
+                />
+              }
             />
             <Route
               path="/review-epc"
@@ -92,6 +100,7 @@ function App() {
             <Route path="/heating" element={<HeatingPage />} />
             <Route path="/check-answers" element={<CheckAnswersPage />} />
             <Route path="/result" element={<ResultPage />} />
+            <Route path="/not-eligible/:reason" element={<FailurePage />} />
             <Route path="/accessibility-statement" element={<AccessibilityStatementPage />} />
           </Routes>
         </main>
