@@ -87,8 +87,8 @@ function IncomePage({ formData, updateField }) {
       <form onSubmit={handleContinue} noValidate>
         <div className={`govuk-form-group${showError ? ' govuk-form-group--error' : ''}`}>
           <fieldset className="govuk-fieldset" aria-describedby={describedBy}>
-            <legend className="govuk-fieldset__legend">
-              <h1 className="govuk-heading-l">What is your total household income?</h1>
+            <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 className="govuk-fieldset__heading">What is your total household income?</h1>
             </legend>
 
             <div id="income-hint" className="govuk-hint">
@@ -119,7 +119,7 @@ function IncomePage({ formData, updateField }) {
                         setShowError(false);
                       }}
                     />
-                    <label className="govuk-radios__label" htmlFor={id}>
+                    <label className="govuk-label govuk-radios__label" htmlFor={id}>
                       {option.label}
                     </label>
                   </div>

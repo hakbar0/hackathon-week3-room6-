@@ -16,15 +16,18 @@ import CheckAnswersPage from './pages/CheckAnswersPage';
 import ResultPage from './pages/ResultPage';
 import AccessibilityStatementPage from './pages/AccessibilityStatementPage';
 import EpcPage from './pages/EpcPage';
+import FailurePage from './pages/FailurePage';
+import { ownershipNextStep } from './utils/eligibility';
 
 function App() {
   // Central answer store (CLAUDE.md §2): all form state lives here and is
   // passed to pages as props so nothing is lost between routes.
   // address + epcRating are populated by the Address page (Q2); the EpcPage
   // (Q3, /review-epc) reads them to show the certificate found for that address.
-  // incomeBand is populated by the Income page.
+  // incomeBand is populated by the Income page; ownership by the Ownership page.
   const [formData, setFormData] = useState({
     country: '',
+    ownership: '',
     address: {
       line1: '10 Downing Street',
       line2: '',
@@ -65,7 +68,16 @@ function App() {
               element={<CountryPage formData={formData} updateField={updateField} />}
             />
             <Route path="/property-type" element={<PropertyTypePage />} />
-            <Route path="/ownership" element={<OwnershipPage />} />
+            <Route
+              path="/ownership"
+              element={
+                <OwnershipPage
+                  formData={formData}
+                  updateField={updateField}
+                  onContinue={(ownership) => navigate(ownershipNextStep(ownership))}
+                />
+              }
+            />
             <Route
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}
@@ -88,6 +100,7 @@ function App() {
             <Route path="/heating" element={<HeatingPage />} />
             <Route path="/check-answers" element={<CheckAnswersPage />} />
             <Route path="/result" element={<ResultPage />} />
+            <Route path="/not-eligible/:reason" element={<FailurePage />} />
             <Route path="/accessibility-statement" element={<AccessibilityStatementPage />} />
           </Routes>
         </main>
