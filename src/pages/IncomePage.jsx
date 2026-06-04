@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
+// TODO: Also import useNavigate for the Continue button
 
 // Bands are split at the £36,000 Warm Homes eligibility threshold (see StartPage)
 // so each band maps unambiguously to eligible / not eligible — no band straddles
