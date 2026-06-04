@@ -17,11 +17,16 @@ const COUNTRIES = [
 function CountryPage({ formData, updateField }) {
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  // Bumped on every failed submit so the error summary remounts and re-takes
+  // focus — a second consecutive Continue with no selection must move focus
+  // back to the summary, not leave it on the button.
+  const [submitCount, setSubmitCount] = useState(0);
 
   function handleSubmit(event) {
     event.preventDefault();
     if (!formData.country) {
       setError('Select which country your property is located in');
+      setSubmitCount((count) => count + 1);
       return;
     }
     setError('');
@@ -38,7 +43,7 @@ function CountryPage({ formData, updateField }) {
       <Link to="/" className="govuk-back-link">Back</Link>
 
       {error && (
-        <ErrorSummary errors={[{ message: error, href: '#country' }]} />
+        <ErrorSummary key={submitCount} errors={[{ message: error, href: '#country' }]} />
       )}
 
       <form onSubmit={handleSubmit} noValidate>

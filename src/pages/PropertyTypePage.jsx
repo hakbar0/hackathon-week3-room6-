@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-// TODO: Also import useNavigate for the Continue button
 
 function PropertyTypePage() {
   // TODO: Read current value from form state (passed via props)

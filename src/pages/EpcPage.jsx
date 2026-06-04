@@ -10,6 +10,9 @@ function EpcPage({ formData, updateField }) {
   const navigate = useNavigate();
   const { address, epcRating, epcValidUntil } = formData;
   const [error, setError] = useState('');
+  // Bumped on every failed submit so the error summary remounts and re-takes
+  // focus on a second consecutive Continue with no selection.
+  const [submitCount, setSubmitCount] = useState(0);
 
   // No address means the user has not completed the Address page yet. Send
   // them back rather than showing an empty certificate.
@@ -21,7 +24,7 @@ function EpcPage({ formData, updateField }) {
         <p className="govuk-body">
           You need to enter your address before we can check its energy rating.
         </p>
-        <Link to="/address" className="govuk-button" role="button" data-module="govuk-button">
+        <Link to="/address" className="govuk-button">
           Enter your address
         </Link>
       </>
@@ -33,6 +36,7 @@ function EpcPage({ formData, updateField }) {
     const choice = formData.epcConfirmed;
     if (!choice) {
       setError('Select whether this is the correct property');
+      setSubmitCount((count) => count + 1);
       return;
     }
     setError('');
@@ -48,7 +52,7 @@ function EpcPage({ formData, updateField }) {
       <Link to="/address" className="govuk-back-link">Back</Link>
 
       {error && (
-        <ErrorSummary errors={[{ message: error, href: '#epc-confirmed' }]} />
+        <ErrorSummary key={submitCount} errors={[{ message: error, href: '#epc-confirmed' }]} />
       )}
 
       <h1 className="govuk-heading-l">Check your property&rsquo;s energy rating</h1>

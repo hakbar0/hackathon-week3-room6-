@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GovukButton from '../components/GovukButton';
-// TODO: Also import useNavigate for the Continue button
 
 // Bands are split at the £36,000 Warm Homes eligibility threshold (see StartPage)
 // so each band maps unambiguously to eligible / not eligible — no band straddles
@@ -23,6 +22,10 @@ function IncomePage({ formData, updateField }) {
   // Initialised from shared state so the value is preserved on return visits.
   const [selected, setSelected] = useState(formData.incomeBand || '');
   const [showError, setShowError] = useState(false);
+  // Bumped on every failed submit so the focus effect re-runs even when
+  // showError is already true — a second consecutive Continue with no
+  // selection must move focus back to the error summary.
+  const [submitCount, setSubmitCount] = useState(0);
   const errorSummaryRef = useRef(null);
 
   // Move focus to the error summary when validation fails (GOV.UK pattern).
@@ -30,12 +33,13 @@ function IncomePage({ formData, updateField }) {
     if (showError && errorSummaryRef.current) {
       errorSummaryRef.current.focus();
     }
-  }, [showError]);
+  }, [showError, submitCount]);
 
   const handleContinue = (event) => {
     event.preventDefault();
     if (!selected) {
       setShowError(true);
+      setSubmitCount((count) => count + 1);
       return;
     }
     updateField('incomeBand', selected);
