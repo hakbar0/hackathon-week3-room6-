@@ -22,3 +22,7 @@ pnpm-debug.log*
 .vscode/
 .idea/
 *.swp
+test-results/
+playwright-report/
+/blob-report/
+.playwright/
