@@ -1,77 +1,29 @@
 # OwnershipPage
 
-A single-question page in the Green Home Grant eligibility journey that asks the
-user about the ownership status of their property. Served at `/ownership`.
+Question page (`/ownership`) asking **"Do you own your property?"** Follows the
+same markup pattern as `CountryPage.jsx` / `EpcPage.jsx`: central state via
+`{ formData, updateField }` props (the page owns no answer state of its own —
+`onChange` writes straight to `formData`), `legend--l` + `govuk-fieldset__heading`
+for the page `<h1>`, the shared `ErrorSummary` component (`key={submitCount}` so
+it remounts and re-takes focus), and a plain `govuk-button`.
 
-## Question
+## Options → stored value (`formData.ownership`)
 
-> **Do you own your property?**
-
-| Option label | Stored value |
+| Option | Value |
 | --- | --- |
 | Yes, I own my property and live in it | `owner-occupier` |
 | Yes, I own my property but lease my property to one or more tenants | `owner-landlord` |
 | No, I am a tenant or social housing tenant | `tenant` |
 | I live in a shared ownership property | `shared-ownership` |
 
-The user picks **one** option (radio buttons) and presses **Continue**.
-
-## GOV.UK Design System standards followed
-
-This page follows the [GOV.UK Design System](https://design-system.service.gov.uk/)
-patterns for a "question page":
-
-- **Radios component** (`govuk-radios`) for a single-choice question.
-- The question is the page `<h1>`, wrapped in a `<fieldset>` / `<legend>` so
-  screen readers announce it as the group label.
-- **Validation**: an error summary (`govuk-error-summary`) that links to the
-  field, an inline error message, and `govuk-form-group--error` on the group.
-  The error wording follows the GOV.UK guidance ("Select…" for radios).
-- A **section caption** ("About your property") and **hint text** give context.
-- **Back link** and two-thirds column width for readability.
-
-## Behaviour / flow
-
-This service is currently **only for owner-occupiers**. Only the first option
-(`owner-occupier` — "Yes, I own my property and live in it") can progress.
+## Flow
 
 - **Back** → `/property-type`.
-- **Continue with no selection** → shows the validation error, no navigation.
-- **Continue as an owner-occupier** → navigates to `/income`.
-- **Continue as any other option** (landlord, tenant, shared ownership) → does
-  **not** progress. The question (radios and Continue button) is **replaced** by
-  a GOV.UK notification banner explaining that the service is for homeowners and
-  pointing to other routes to funding (Warm Homes: Local Grant via the Local
-  Authority, the Energy Company Obligation scheme, and contacting the local
-  council). In this state only a **Back** link is shown; focus moves to the
-  banner. Selecting **Back** returns to the question so the user can change their
-  answer.
-
-The single eligible answer (`ELIGIBLE_VALUE`) and the banner copy live in
-`OwnershipPage.jsx`; update them there if the policy changes.
-
-## Reusable components
-
-This page is built from shared components in `src/components/` so other pages
-(including a summary / check-answers page) can reuse them:
-
-- `BackLink` — GOV.UK back link (supports `href` or an in-page `onClick`).
-- `ErrorSummary` — the shared error summary box (from `main`); takes
-  `errors: [{ message, href }]` and takes focus on mount.
-- `RadioField` — a full single-choice question (legend-as-heading, caption,
-  hint, inline error, radios) driven by an `options` array.
-- `NotificationBanner` — focusable GOV.UK notification banner; body via children.
-- `TwoThirdsColumn` — the standard two-thirds content column wrapper.
-- `SummaryList` — key/value rows with optional "Change" actions (not yet used).
-- `GovukButton` — existing button component, used here as the Continue submit.
-
-## State (current vs. intended)
-
-The selected value is held in local component state (`useState`). The wider app
-uses a central `formData` store in `App.jsx` passed to pages as props
-(CLAUDE.md §2). A follow-up should lift the `ownership` answer into that store.
-
-## Files
-
-- `OwnershipPage.jsx` — the page component (composed from the components above).
-- `OwnershipPage.md` — this document.
+- **No selection + Continue** → error summary (takes focus) + inline error.
+- **`owner-occupier` + Continue** → navigates to `/income`.
+- **Any other answer + Continue** → **replaces the question** with a guidance
+  view (`<h1>` + `govuk-body`, mirroring the EpcPage "cannot proceed" layout):
+  "This service is currently for homeowners", pointing to Warm Homes: Local Grant
+  (Local Authority), the Energy Company Obligation scheme and the local council.
+  Only **Back** is shown, returning to the question. The single eligible value is
+  `ELIGIBLE_VALUE` in `OwnershipPage.jsx`.

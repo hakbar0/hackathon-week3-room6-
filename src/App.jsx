@@ -8,6 +8,7 @@ import StartPage from './pages/StartPage';
 import CountryPage from './pages/CountryPage';
 import PropertyTypePage from './pages/PropertyTypePage';
 import OwnershipPage from './pages/OwnershipPage';
+import AddressPage from './pages/AddressPage';
 import IncomePage from './pages/IncomePage';
 import InsulationPage from './pages/InsulationPage';
 import HeatingPage from './pages/HeatingPage';
@@ -21,9 +22,10 @@ function App() {
   // passed to pages as props so nothing is lost between routes.
   // address + epcRating are populated by the Address page (Q2); the EpcPage
   // (Q3, /review-epc) reads them to show the certificate found for that address.
-  // incomeBand is populated by the Income page.
+  // incomeBand is populated by the Income page; ownership by the Ownership page.
   const [formData, setFormData] = useState({
     country: '',
+    ownership: '',
     address: {
       line1: '10 Downing Street',
       line2: '',
@@ -64,7 +66,10 @@ function App() {
               element={<CountryPage formData={formData} updateField={updateField} />}
             />
             <Route path="/property-type" element={<PropertyTypePage />} />
-            <Route path="/ownership" element={<OwnershipPage />} />
+            <Route
+              path="/ownership"
+              element={<OwnershipPage formData={formData} updateField={updateField} />}
+            />
             <Route
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}
