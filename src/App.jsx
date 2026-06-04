@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import GovukHeader from './components/GovukHeader';
 // TODO: Mount PhaseBanner below GovukHeader — import PhaseBanner from './components/PhaseBanner';
 // TODO: Mount GovukFooter after the closing </main> — import GovukFooter from './components/GovukFooter';
 import StartPage from './pages/StartPage';
 import PropertyTypePage from './pages/PropertyTypePage';
 import OwnershipPage from './pages/OwnershipPage';
+import AddressPage from './pages/AddressPage';
 import IncomePage from './pages/IncomePage';
 import InsulationPage from './pages/InsulationPage';
 import HeatingPage from './pages/HeatingPage';
@@ -34,6 +35,8 @@ function App() {
   const updateField = (field, value) =>
     setFormData((prev) => ({ ...prev, [field]: value }));
 
+  const navigate = useNavigate();
+
   return (
     <>
       <GovukHeader />
@@ -47,6 +50,16 @@ function App() {
             <Route
               path="/review-epc"
               element={<EpcPage formData={formData} updateField={updateField} />}
+            />
+            <Route
+              path="/address"
+              element={
+                <AddressPage
+                  address={formData.address}
+                  setAddress={(a) => updateField('address', a)}
+                  onContinue={() => navigate('/review-epc')}
+                />
+              }
             />
             <Route path="/income" element={<IncomePage />} />
             <Route path="/insulation" element={<InsulationPage />} />
