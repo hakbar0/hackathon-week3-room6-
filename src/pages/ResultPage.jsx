@@ -5,6 +5,7 @@ import {
   ELIGIBLE_OWNERSHIP,
   FULL_FUNDING_INCOME_BANDS,
 } from '../utils/eligibility';
+import { buildSummaryRows } from '../utils/answerLabels';
 
 // Guidance shown when the applicant is not an owner-occupier (tenant, landlord
 // or shared ownership) — privately rented homes can still be funded via the
@@ -33,6 +34,7 @@ function ResultPage({ formData = {} }) {
   const isEligible = outcome === 'eligible';
   const incomeAboveThreshold =
     formData.incomeBand && !FULL_FUNDING_INCOME_BANDS.includes(formData.incomeBand);
+  const answerRows = buildSummaryRows(formData);
 
   return (
     <>
@@ -117,9 +119,42 @@ function ResultPage({ formData = {} }) {
         </>
       )}
 
-      <p className="govuk-body">
-        <Link to="/check-answers" className="govuk-link">Review your answers</Link>
-      </p>
+      <h2 className="govuk-heading-m">Your answers</h2>
+      <dl className="govuk-summary-list">
+        {answerRows.map((row) => (
+          <div className="govuk-summary-list__row" key={row.key}>
+            <dt className="govuk-summary-list__key">{row.key}</dt>
+            <dd className="govuk-summary-list__value">
+              {Array.isArray(row.value)
+                ? row.value.map((line, i) => (
+                    <span key={i}>
+                      {line}
+                      {i < row.value.length - 1 && <br />}
+                    </span>
+                  ))
+                : row.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Print-to-PDF: the browser print engine produces a tagged, accessible
+          PDF from this semantic content. The button and the on-screen-only
+          navigation link are hidden in print via the app-no-print class. */}
+      <div className="app-no-print">
+        <button
+          type="button"
+          className="govuk-button govuk-button--secondary"
+          data-module="govuk-button"
+          onClick={() => window.print()}
+        >
+          Save your result as a PDF
+        </button>
+
+        <p className="govuk-body">
+          <Link to="/check-answers" className="govuk-link">Review your answers</Link>
+        </p>
+      </div>
     </>
   );
 }
