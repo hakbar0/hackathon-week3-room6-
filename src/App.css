@@ -182,6 +182,13 @@ a:focus {
   margin-bottom: var(--govuk-spacing-1);
 }
 
+.govuk-hint {
+  font-size: 19px;
+  line-height: 1.3157894737;
+  color: var(--govuk-dark-grey);
+  margin-bottom: var(--govuk-spacing-4);
+}
+
 .govuk-input {
   font-size: 19px;
   padding: var(--govuk-spacing-1);
